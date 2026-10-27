@@ -16,7 +16,7 @@ export const Videojuego = sequelize.define('videojuego', {
         allowNull: true
     },
     precio: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
     plataforma: {

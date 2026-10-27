@@ -4,6 +4,10 @@ import gameRoutes from "./routes/games.routes.js";
 import { sequelize } from './db.js';
 import { Categoria } from './models/Categoria.js';
 import { Videojuego } from './models/Videojuego.js';
+import { Rol } from './models/Rol.js';
+import { Usuario } from './models/Usuario.js';
+import { Compra } from './models/Compra.js';
+import { DetalleCompra } from './models/DetalleCompra.js';
 
 const app = express();
 
@@ -14,6 +18,46 @@ Categoria.hasMany(Videojuego, {
 
 Videojuego.belongsTo(Categoria, {
     foreignKey: 'categoriaId',
+    allowNull: false
+});
+
+Rol.hasMany(Usuario, {
+    foreignKey: 'rolId',
+    onDelete: 'RESTRICT'
+});
+
+Usuario.belongsTo(Rol, {
+    foreignKey: 'rolId',
+    allowNull: false
+});
+
+Usuario.hasMany(Compra, {
+    foreignKey: 'usuarioId',
+    onDelete: 'RESTRICT'
+});
+
+Compra.belongsTo(Usuario, {
+    foreignKey: 'usuarioId',
+    allowNull: false
+});
+
+Compra.hasMany(DetalleCompra, {
+    foreignKey: 'compraId',
+    onDelete: 'RESTRICT'
+});
+
+DetalleCompra.belongsTo(Compra, {
+    foreignKey: 'compraId',
+    allowNull: false
+});
+
+Videojuego.hasMany(DetalleCompra, {
+    foreignKey: 'videojuegoId',
+    onDelete: 'RESTRICT'
+});
+
+DetalleCompra.belongsTo(Videojuego, {
+    foreignKey: 'videojuegoId',
     allowNull: false
 });
 
