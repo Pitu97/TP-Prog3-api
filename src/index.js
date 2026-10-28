@@ -63,6 +63,7 @@ DetalleCompra.belongsTo(Videojuego, {
 
 async function iniciarServidor() {
     try {
+        app.use(express.json());
         await sequelize.sync();
         console.log('Base de datos sincronizada');
 
