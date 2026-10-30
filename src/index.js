@@ -67,9 +67,8 @@ async function iniciarServidor() {
         await sequelize.sync();
         console.log('Base de datos sincronizada');
 
-
+        app.use(gameRoutes);
         app.listen(PORT, () => {
-            app.use(gameRoutes);
             console.log(`Servidor escuchando en el puerto: ${PORT}`);
         });
     
