@@ -7,23 +7,23 @@ export const Videojuego = sequelize.define('videojuego', {
         primaryKey: true,
         autoIncrement: true
     },
-    nombre: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    descripcion: {
+    description: {
         type: DataTypes.TEXT,
         allowNull: true
     },
-    precio: {
+    price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
-    plataforma: {
+    platform: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    imagenUrl: {
+    image: {
         type: DataTypes.STRING,
         allowNull: true
     }

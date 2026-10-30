@@ -7,7 +7,7 @@ export const Usuario = sequelize.define('usuario', {
         primaryKey: true,
         autoIncrement: true
     },
-    nombre: {
+    name: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -16,7 +16,7 @@ export const Usuario = sequelize.define('usuario', {
         allowNull: false,
         unique: true
     },
-    contraseña: {
+    password: {
         type: DataTypes.STRING,
         allowNull: false
     }

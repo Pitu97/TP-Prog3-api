@@ -38,22 +38,22 @@ export const findGame = async (req, res) => {
 
 export const createGame = async (req, res) => {
   try {
-    const { nombre, descripcion, precio, plataforma, imagenUrl, categoriaId } =
+    const { name, description, price, platform, image, categoryId } =
       req.body;
 
-    if (!nombre || !plataforma) {
+    if (!name || !platform) {
       return res
         .status(400)
-        .json({ message: "Nombre and plataforma fields are required" });
+        .json({ message: "Name and platform fields are required" });
     }
 
     const newGame = await Videojuego.create({
-      nombre,
-      descripcion,
-      precio,
-      plataforma,
-      imagenUrl,
-      categoriaId,
+      name,
+      description,
+      price,
+      platform,
+      image,
+      categoryId,
     });
     res.status(201).json(newGame);
   } catch (error) {
@@ -69,7 +69,7 @@ export const createGame = async (req, res) => {
 
 export const updateGame = async (req, res) => {
   try {
-    const { nombre, descripcion, precio, plataforma, imagenUrl, categoriaId } =
+    const { name, description, price, platform, image, categoryId } =
       req.body;
     const { id } = req.params;
 
@@ -80,12 +80,12 @@ export const updateGame = async (req, res) => {
     }
 
     await game.update({
-      nombre,
-      descripcion,
-      precio,
-      plataforma,
-      imagenUrl,
-      categoriaId,
+      name,
+      description,
+      price,
+      platform,
+      image,
+      categoryId,
     });
 
     res.json(game);
@@ -110,7 +110,7 @@ export const deleteGame = async (req, res) => {
 
     await game.destroy();
 
-    res.send(`Juego con id: ${id} borrado`);
+    res.send(`Game deleted succesfully. id: ${id}`);
   } catch (error) {
     console.error(error);
 

@@ -38,18 +38,24 @@ export const findCategory = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    const { nombre } = req.body;
+    const { name } = req.body;
 
-    if (!nombre) {
-      return res.status(400).json({ message: "Nombre field is required" });
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: "Name field is required" });
     }
 
     const newCategory = await Categoria.create({
-      nombre,
+      name,
     });
     res.status(201).json(newCategory);
   } catch (error) {
     console.error(error);
+
+    if(error.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        message: "Category already exists",
+      });
+    }
 
     res.status(500).json({
       message: "Error creating category",
@@ -61,7 +67,7 @@ export const createCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
   try {
-    const { nombre } = req.body;
+    const { name } = req.body;
     const { id } = req.params;
 
     const category = await Categoria.findByPk(id);
@@ -70,17 +76,23 @@ export const updateCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    if(!nombre) {
+    if(!name || !name.trim()) {
         return res.status(400).json({
-            message: "Nombre field is required",
+            message: "Name field is required",
         });
     }
 
-    await category.update({ nombre });
+    await category.update({ name });
 
     res.json(category);
   } catch (error) {
     console.error(error);
+
+     if(error.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({
+        message: "Category already exists",
+      });
+    }
 
     res.status(500).json({ message: "Error updating category" });
   }
@@ -100,7 +112,7 @@ export const deleteCategory = async (req, res) => {
 
     await category.destroy();
 
-    res.json({message: `Categoria con el id: ${id} borrado exitosamente`});
+    res.json({message: `Category deleted succesfully. id: ${id}`});
   } catch (error) {
     console.error(error);
 

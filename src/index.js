@@ -12,55 +12,92 @@ import { DetalleCompra } from './models/DetalleCompra.js';
 
 const app = express();
 
+// CATEGORIA - VIDEOJUEGO
+
 Categoria.hasMany(Videojuego, {
-    foreignKey: 'categoriaId',
+    foreignKey: {
+        name: 'categoryId',
+        allowNull: false
+    },
     onDelete: 'RESTRICT'
 });
 
 Videojuego.belongsTo(Categoria, {
-    foreignKey: 'categoriaId',
-    allowNull: false
+    foreignKey: {
+        name: 'categoryId',
+        allowNull: false
+    }
 });
 
+// ROL - USUARIO
+
 Rol.hasMany(Usuario, {
-    foreignKey: 'rolId',
+    foreignKey: {
+        name: 'roleId',
+        allowNull: false
+    },
     onDelete: 'RESTRICT'
 });
 
 Usuario.belongsTo(Rol, {
-    foreignKey: 'rolId',
-    allowNull: false
+    foreignKey: {
+        name: 'roleId',
+        allowNull: false
+    }
 });
 
+// USUARIO - COMPRA
+
 Usuario.hasMany(Compra, {
-    foreignKey: 'usuarioId',
+    foreignKey: {
+        name: 'userId',
+        allowNull: false
+    },
     onDelete: 'RESTRICT'
 });
 
 Compra.belongsTo(Usuario, {
-    foreignKey: 'usuarioId',
-    allowNull: false
+    foreignKey: {
+        name: 'userId',
+        allowNull: false
+    }
 });
 
+// COMPRA - DETALLECOMPRA
+
 Compra.hasMany(DetalleCompra, {
-    foreignKey: 'compraId',
+    foreignKey: {
+        name:'purchaseId',
+        allowNull: false
+    },
     onDelete: 'RESTRICT'
 });
 
 DetalleCompra.belongsTo(Compra, {
-    foreignKey: 'compraId',
-    allowNull: false
+    foreignKey: {
+        name:'purchaseId',
+        allowNull: false
+    }
 });
 
+// VIDEOJUEGO - DETALLECOMPRA
+
 Videojuego.hasMany(DetalleCompra, {
-    foreignKey: 'videojuegoId',
+    foreignKey: {
+        name:'gameId',
+        allowNull: false
+    },
     onDelete: 'RESTRICT'
 });
 
 DetalleCompra.belongsTo(Videojuego, {
-    foreignKey: 'videojuegoId',
-    allowNull: false
+    foreignKey: {
+        name:'gameId',
+        allowNull: false
+    }
 });
+
+// INICIO DEL SERVER
 
 async function iniciarServidor() {
     try {

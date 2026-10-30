@@ -7,11 +7,11 @@ export const DetalleCompra = sequelize.define('detalleCompra', {
         primaryKey: true,
         autoIncrement: true
     },
-    cantidad: {
+    quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    precioUnitario: {
+    unitPrice: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     }

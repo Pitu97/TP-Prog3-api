@@ -7,7 +7,7 @@ export const Compra = sequelize.define('compra', {
         primaryKey: true,
         autoIncrement: true
     },
-    fecha: {
+    date: {
         type: DataTypes.DATE,
         allowNull: false
     },
@@ -15,7 +15,7 @@ export const Compra = sequelize.define('compra', {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
-    estado: {
+    status: {
         type: DataTypes.STRING,
         allowNull: false
     }
