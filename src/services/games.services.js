@@ -55,12 +55,12 @@ export const createGame = async (req, res) => {
       imagenUrl,
       categoriaId,
     });
-    res.json(newGame);
+    res.status(201).json(newGame);
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      message: "Error retrieving games",
+      message: "Error creating game",
     });
   }
 };
