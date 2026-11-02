@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import { Usuario } from "../models/Usuario.js";
 import { Rol } from "../models/Rol.js";
+import { isValidEmail, isValidName, isValidPassword } from "../utils/validators.js";
+
 
 // REGISTRAR USUARIO
 
@@ -10,9 +12,21 @@ export const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        if (!name || !email || !password) {
+        if (!isValidName(name) || !email || !password) {
             return res.status(400).json({
                 message: "All fields are required"
+            });
+        }
+
+        if (!isValidEmail(email)) {
+            return res.status(400).json({
+                message: "Invalid email format"
+            });
+        }
+
+        if (!isValidPassword(password)) {
+            return res.status(400).json({
+                message: "Password must have at least 8 characters, one uppercase and one lowercase letter"
             });
         }
 
@@ -76,6 +90,12 @@ export const loginUser = async (req, res) => {
             });
         }
 
+        if (!isValidEmail(email)) {
+            return res.status(400).json({
+                message: "Invalid email format"
+            });
+        }
+
         const user = await Usuario.findOne({
             where: { email }
         });
@@ -135,9 +155,21 @@ export const createAdmin = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        if (!name || !email || !password) {
+        if (!isValidName(name) || !email || !password) {
             return res.status(400).json({
                 message: "All fields are required"
+            });
+        }
+
+        if (!isValidEmail(email)) {
+            return res.status(400).json({
+                message: "Invalid email format"
+            });
+        }
+
+        if (!isValidPassword(password)) {
+            return res.status(400).json({
+                message: "Password must have at least 8 characters, one uppercase and one lowercase letter"
             });
         }
 
