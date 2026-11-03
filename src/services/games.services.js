@@ -1,6 +1,10 @@
 import { Videojuego } from "../models/Videojuego.js";
 import { Categoria } from "../models/Categoria.js";
-import { isValidCategory, isValidName, isValidPrice } from "../utils/validators.js";
+import {
+  isValidCategory,
+  isValidName,
+  isValidPrice,
+} from "../utils/validators.js";
 
 // ENCONTRAR JUEGO/JUEGOS
 
@@ -40,22 +44,21 @@ export const findGame = async (req, res) => {
 
 export const createGame = async (req, res) => {
   try {
-    const { name, description, price, platform, image, categoryId } =
-      req.body;
+    const { name, description, price, platform, image, categoryId } = req.body;
 
-    if (!name || !platform) {
+    if (!isValidName(name) || !isValidName(platform)) {
       return res
         .status(400)
         .json({ message: "Name and platform fields are required" });
     }
 
-    if(!isValidPrice(price)) {
+    if (!isValidPrice(price)) {
       return res
         .status(400)
         .json({ message: "Price must be a positive number" });
     }
 
-    if(!isValidCategory(categoryId)) {
+    if (!isValidCategory(categoryId)) {
       return res
         .status(400)
         .json({ message: "A valid category ID is required" });
@@ -64,9 +67,7 @@ export const createGame = async (req, res) => {
     const category = await Categoria.findByPk(categoryId);
 
     if (!category) {
-      return res
-        .status(404)
-        .json({ message: "Category not found" });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     const newGame = await Videojuego.create({
@@ -91,8 +92,14 @@ export const createGame = async (req, res) => {
 
 export const updateGame = async (req, res) => {
   try {
-    const { name, description, price, platform, image, categoryId } =
-      req.body;
+    const { name, description, price, platform, image, categoryId } = req.body;
+
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        message: "At least one field is required",
+      });
+    }
+    
     const { id } = req.params;
 
     const game = await Videojuego.findByPk(id);
@@ -102,15 +109,11 @@ export const updateGame = async (req, res) => {
     }
 
     if (name !== undefined && !isValidName(name)) {
-      return res
-        .status(400)
-        .json({ message: "Name cannot be empty" });
+      return res.status(400).json({ message: "Name cannot be empty" });
     }
 
     if (platform !== undefined && !isValidName(platform)) {
-      return res
-        .status(400)
-        .json({ message: "Platform cannot be empty" });
+      return res.status(400).json({ message: "Platform cannot be empty" });
     }
 
     if (price !== undefined && !isValidPrice(price)) {
@@ -120,19 +123,15 @@ export const updateGame = async (req, res) => {
     }
 
     if (categoryId !== undefined) {
-      if(!isValidCategory(categoryId)) {
-        return res
-        .status(400)
-        .json({ message: "Invalid Category ID" });
+      if (!isValidCategory(categoryId)) {
+        return res.status(400).json({ message: "Invalid Category ID" });
       }
-    }
 
-    const category = await Categoria.findByPk(categoryId);
+      const category = await Categoria.findByPk(categoryId);
 
-    if (!category) {
-      return res
-        .status(404)
-        .json({ message: "Category not found" });
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
     }
 
     await game.update({
