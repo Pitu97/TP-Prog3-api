@@ -178,3 +178,44 @@ export const getAllPurchases = async (req, res) => {
         });
     }
 };
+
+// MODIFICAR ESTADO DE COMPRA
+
+export const updatePurchaseStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const allowedStatuses = ["pending", "paid", "cancelled"];
+
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({
+                message: "Invalid purchase status"
+            });
+        }
+
+        const purchase = await Compra.findByPk(id);
+
+        if(!purchase) {
+            return res.status(404).json({
+                message: "Purchase not found"
+            });
+        }
+
+        purchase.status = status;
+
+        await purchase.save();
+
+        return res.status(200).json({
+            message: "Purchase status updated successfully",
+            purchase
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error updating purchase status"
+        });
+    }
+};
