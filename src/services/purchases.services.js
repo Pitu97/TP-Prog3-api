@@ -3,6 +3,7 @@ import { Videojuego } from "../models/Videojuego.js";
 import { sequelize } from "../db.js";
 import { Compra } from "../models/Compra.js";
 import { DetalleCompra } from "../models/DetalleCompra.js";
+import { Usuario } from "../models/Usuario.js";
 
 // REGISTRAR COMPRA
 
@@ -141,6 +142,39 @@ export const getPurchaseHistory = async (req, res) => {
 
         return res.status(500).json({
             message: "Error retrieving purchase history"
+        });
+    }
+};
+
+// CONSULTAR TODAS LAS COMPRAS
+
+export const getAllPurchases = async (req, res) => {
+    try {
+        const purchases = await Compra.findAll({
+            include: [
+                {
+                    model: Usuario,
+                    attributes: ['id', 'name', 'email']
+                },
+                {
+                    model: DetalleCompra,
+                    include: [
+                        {
+                            model: Videojuego
+                        }
+                    ]
+                }
+            ],
+            order: [['date', 'DESC']]
+        });
+
+        return res.status(200).json(purchases);
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error retrieving purchases"
         });
     }
 };
