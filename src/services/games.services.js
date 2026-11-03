@@ -1,4 +1,6 @@
 import { Videojuego } from "../models/Videojuego.js";
+import { Categoria } from "../models/Categoria.js";
+import { isValidCategory, isValidName, isValidPrice } from "../utils/validators.js";
 
 // ENCONTRAR JUEGO/JUEGOS
 
@@ -47,6 +49,26 @@ export const createGame = async (req, res) => {
         .json({ message: "Name and platform fields are required" });
     }
 
+    if(!isValidPrice(price)) {
+      return res
+        .status(400)
+        .json({ message: "Price must be a positive number" });
+    }
+
+    if(!isValidCategory(categoryId)) {
+      return res
+        .status(400)
+        .json({ message: "A valid category ID is required" });
+    }
+
+    const category = await Categoria.findByPk(categoryId);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ message: "Category not found" });
+    }
+
     const newGame = await Videojuego.create({
       name,
       description,
@@ -77,6 +99,40 @@ export const updateGame = async (req, res) => {
 
     if (!game) {
       return res.status(404).json({ message: "Game not found" });
+    }
+
+    if (name !== undefined && !isValidName(name)) {
+      return res
+        .status(400)
+        .json({ message: "Name cannot be empty" });
+    }
+
+    if (platform !== undefined && !isValidName(platform)) {
+      return res
+        .status(400)
+        .json({ message: "Platform cannot be empty" });
+    }
+
+    if (price !== undefined && !isValidPrice(price)) {
+      return res
+        .status(400)
+        .json({ message: "Price must be a positive number" });
+    }
+
+    if (categoryId !== undefined) {
+      if(!isValidCategory(categoryId)) {
+        return res
+        .status(400)
+        .json({ message: "Invalid Category ID" });
+      }
+    }
+
+    const category = await Categoria.findByPk(categoryId);
+
+    if (!category) {
+      return res
+        .status(404)
+        .json({ message: "Category not found" });
     }
 
     await game.update({

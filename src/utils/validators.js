@@ -11,3 +11,15 @@ export const isValidPassword = (password) => {
 export const isValidName = (name) => {
     return typeof name === "string" && name.trim().length > 0;
 };
+
+export const isValidPrice = (price) => {
+    return price !== "" && 
+        price !== null &&
+        price !== undefined &&
+        Number.isFinite(Number(price)) &&
+        Number(price) > 0;
+};
+
+export const isValidCategory = (categoryId) => {
+    return Number.isInteger(Number(categoryId)) && Number(categoryId) > 0;
+};
