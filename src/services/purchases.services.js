@@ -1,4 +1,4 @@
-import { DATE, Op } from "sequelize";
+import { Op } from "sequelize";
 import { Videojuego } from "../models/Videojuego.js";
 import { sequelize } from "../db.js";
 import { Compra } from "../models/Compra.js";
@@ -20,7 +20,7 @@ export const createPurchase = async (req, res) => {
         const gameIds = [];
 
         for (const item of items) {
-            if(!Number.isInteger(item.gameId) || item.gameId <= 0 || !Number.isInteger(item.quantity) || item.quantity <= 0) {
+            if(!item || typeof item !== "object" || !Number.isInteger(item.gameId) || item.gameId <= 0 || !Number.isInteger(item.quantity) || item.quantity <= 0) {
                return res.status(400).json({
                     message: "Each item must have a valid game ID and quantity"
                 }); 
