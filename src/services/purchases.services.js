@@ -112,3 +112,35 @@ export const createPurchase = async (req, res) => {
         });
     }
 };
+
+// HISTORIAL DE COMPRAS
+
+export const getPurchaseHistory = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const purchases = await Compra.findAll({
+            where: { userId },
+            include: [
+                {
+                    model: DetalleCompra,
+                    include: [
+                        {
+                            model: Videojuego
+                        }
+                    ]
+                }
+            ],
+            order: [['date', 'DESC']]
+        });
+
+        return res.status(200).json(purchases);
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error retrieving purchase history"
+        });
+    }
+};
