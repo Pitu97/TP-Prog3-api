@@ -3,6 +3,7 @@ import { PORT } from './config.js';
 import gameRoutes from "./routes/games.routes.js";
 import categoryRoutes from "./routes/categories.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import purchaseRoutes from "./routes/purchase.routes.js";
 import { sequelize } from './db.js';
 import { Categoria } from './models/Categoria.js';
 import { Videojuego } from './models/Videojuego.js';
@@ -109,6 +110,7 @@ async function iniciarServidor() {
         app.use(gameRoutes);
         app.use(categoryRoutes);
         app.use(authRoutes);
+        app.use(purchaseRoutes);
         
         app.listen(PORT, () => {
             console.log(`Servidor escuchando en el puerto: ${PORT}`);
