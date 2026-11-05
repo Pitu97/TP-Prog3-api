@@ -265,3 +265,108 @@ export const getUserbyId = async (req, res) => {
         });
     }
 };
+
+// ACTUALIZAR USUARIO
+
+export const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, password, roleId } = req.body;
+
+        const user = await Usuario.findByPk(id);
+
+        if(!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        if (name === undefined && email === undefined && password === undefined && roleId === undefined) {
+            return res.status(400).json({
+                message: "At least one field is required"
+            });
+        }
+
+        if (roleId !== undefined && req.user.roleId !== 1) {
+            return res.status(403).json({
+                message: "Only superadmin can modify user roles"
+            });
+        }
+
+        if (name !== undefined) {
+            if(!isValidName(name)) {
+                return res.status(400).json({
+                    message: "Invalid name"
+                });
+            }
+            user.name = name;
+        }
+
+        if (email !== undefined) {
+            if(!isValidEmail(email)) {
+                return res.status(400).json({
+                    message: "Invalid email format"
+                });
+            }
+
+            const existingUser = await Usuario.findOne({
+                where: { email }
+            });
+
+            if (existingUser && existingUser.id !== user.id) {
+                return res.status(409).json({
+                    message: "Email already registered"
+                });
+            }
+
+            user.email = email;
+        }
+
+        if (password !== undefined) {
+            if(!isValidPassword(password)) {
+                return res.status(400).json({
+                    message: "Password must have at least 8 characters, one uppercase and one lowercase letter"
+                });
+            }
+
+            user.password = await bcrypt.hash(password, 10);
+        }
+
+        if(roleId !== undefined) {
+            if(!Number.isInteger(roleId) || roleId <= 0) {
+                return res.status(400).json({
+                    message: "Invalid role ID"
+                });
+            }
+
+            const role = await Rol.findByPk(roleId);
+
+            if (!role) {
+                return res.status(404).json({
+                    message: "Role not found"
+                });
+            }
+
+            user.roleId = roleId;
+        }
+
+        await user.save();
+
+        return res.status(200).json({
+            message: "User updated successfully",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                roleId: user.roleId
+            }
+        });
+
+    } catch (error) {
+         console.error(error);
+
+        return res.status(500).json({
+            message: "Error updating user"
+        });
+    }
+};
