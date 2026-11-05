@@ -219,3 +219,49 @@ export const createAdmin = async (req, res) => {
         });
     }
 };
+
+// CONSULTAR TODOS LOS USUARIOS
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await Usuario.findAll({
+            attributes: ['id', 'name', 'email', 'roleId']
+        });
+
+        return res.status(200).json(users);
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error retrieving users"
+        });
+    }
+};
+
+// CONSULTAR USUARIO POR ID
+
+export const getUserbyId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await Usuario.findByPk(id , {
+            attributes: ['id', 'name', 'email', 'roleId']
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error retrieving user"
+        });
+    }
+};
