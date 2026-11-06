@@ -246,6 +246,12 @@ export const updatePurchaseStatus = async (req, res) => {
       });
     }
 
+    if (purchase.status !== "pending") {
+      return res.status(409).json({
+        message: "Cannot change the status of a finalized purchase",
+      });
+    }
+
     purchase.status = status;
 
     await purchase.save();
@@ -254,6 +260,7 @@ export const updatePurchaseStatus = async (req, res) => {
       message: "Purchase status updated successfully",
       purchase,
     });
+
   } catch (error) {
     console.error(error);
 
