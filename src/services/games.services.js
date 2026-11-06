@@ -1,17 +1,65 @@
 import { Videojuego } from "../models/Videojuego.js";
 import { Categoria } from "../models/Categoria.js";
-import {
-  isValidCategory,
-  isValidName,
-  isValidPrice,
-} from "../utils/validators.js";
+import { isValidCategory, isValidName, isValidPrice } from "../utils/validators.js";
+import { Op } from "sequelize";
 
 // ENCONTRAR JUEGO/JUEGOS
 
 export const findGames = async (req, res) => {
   try {
-    const games = await Videojuego.findAll();
+    const {name, platform, categoryId} = req.query;
+    const filters = {};
+
+    if(name !== undefined) {
+      if(typeof name !== "string" || !name.trim()) {
+        return res.status(400).json({
+          message: "Invalid name filter",
+        });
+      }
+
+      filters.name = {
+        [Op.like]: `%${name.trim()}%`,
+      };
+    }
+
+    if(platform !== undefined) {
+      if(typeof platform !== "string" || !platform.trim()) {
+        return res.status(400).json({
+          message: "Invalid platform filter",
+        });
+      }
+
+      filters.platform = {
+        [Op.like]: platform.trim(),
+      };
+    }
+
+    if (categoryId !== undefined) {
+      const parseCategoryId = Number(categoryId);
+
+      if (!Number.isInteger(parseCategoryId) || parseCategoryId <= 0) {
+        return res.status(400).json({
+          message: "Invalid category ID",
+        });
+      }
+
+      const category = await Categoria.findByPk(parseCategoryId);
+
+      if(!category) {
+        return res.status(404).json({
+          message: "Category not found",
+        });
+      }
+
+      filters.categoryId = parseCategoryId;
+    }
+
+    const games = await Videojuego.findAll({
+      where: filters,
+    });
+
     res.json(games);
+    
   } catch (error) {
     console.error(error);
 
