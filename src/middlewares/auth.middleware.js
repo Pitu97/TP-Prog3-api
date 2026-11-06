@@ -5,15 +5,15 @@ export const verifyToken = (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
 
-        if(!authHeader) {
+        if (!authHeader) {
             return res.status(401).json({
                 message: "Token not provided"
             });
         }
 
-        const token = authHeader.split(" ")[1];
+        const [scheme, token] = authHeader.split(" ");
 
-        if (!token) {
+        if (scheme !== "Bearer" || !token) {
             return res.status(401).json({
                 message: "Invalid authorization format"
             });
@@ -33,24 +33,20 @@ export const verifyToken = (req, res, next) => {
 };
 
 export const authorizeRoles = (...allowedRoles) => {
-    return async (req, res, next) => {
-        try {
-            const { roleId } = req.user;
+    return (req, res, next) => {
 
-            if(!allowedRoles.includes(roleId)) {
-                return res.status(403).json({
-                    message: "You do not have permission to perform this action"
-                });
-            }
-
-            next();
-
-        } catch (error) {
-            console.error(error);
-
-            res.status(500).json({
-                message: "Authorization error"
+        if (!req.user) {
+            return res.status(401).json({
+                message: "Authentication required"
             });
         }
+
+        if (!allowedRoles.includes(req.user.roleId)) {
+            return res.status(403).json({
+                message: "You do not have permission to perform this action"
+            });
+        }
+
+        next();
     };
 };
