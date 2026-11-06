@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import { Usuario } from "../models/Usuario.js";
 import { Rol } from "../models/Rol.js";
+import { Compra } from "../models/Compra.js";
 import { isValidEmail, isValidName, isValidPassword } from "../utils/validators.js";
 
 
@@ -367,6 +368,45 @@ export const updateUser = async (req, res) => {
 
         return res.status(500).json({
             message: "Error updating user"
+        });
+    }
+};
+
+// ELIMINAR USUARIO
+
+export const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const user = await Usuario.findByPk(id);
+
+        if(!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        const purchases = await Compra.findOne({
+            where: { userId: id }
+        });
+
+        if (purchases) {
+            return res.status(409).json({
+                message: "Cannot delete user because they have associated purchases"
+            });
+        }
+
+        await user.destroy();
+
+        return res.status(200).json({
+            message: "User deleted succesfully"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Error deleting user"
         });
     }
 };

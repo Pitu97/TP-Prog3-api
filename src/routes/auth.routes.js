@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createAdmin, getAllUsers, getUserbyId, loginUser, registerUser, updateUser } from "../services/auth.services.js";
+import { createAdmin, deleteUser, getAllUsers, getUserbyId, loginUser, registerUser, updateUser } from "../services/auth.services.js";
 import { authorizeRoles, verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -15,5 +15,7 @@ router.get("/admin/users", verifyToken, authorizeRoles(1, 2), getAllUsers);
 router.get("/admin/users/:id", verifyToken, authorizeRoles(1, 2), getUserbyId);
 
 router.patch("/admin/users/:id", verifyToken, authorizeRoles(1, 2), updateUser);
+
+router.delete("/admin/users/:id", verifyToken, authorizeRoles(1, 2), deleteUser);
 
 export default router;
