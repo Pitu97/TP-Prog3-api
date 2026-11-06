@@ -59,7 +59,7 @@ export const findGames = async (req, res) => {
     });
 
     res.json(games);
-    
+
   } catch (error) {
     console.error(error);
 
@@ -216,6 +216,12 @@ export const deleteGame = async (req, res) => {
     res.send(`Game deleted succesfully. id: ${id}`);
   } catch (error) {
     console.error(error);
+
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      return res.status(409).json({
+        message: "Cannot delete game because it is associated with purchases",
+      });
+    }
 
     res.status(500).json({ message: "Error deleting game" });
   }

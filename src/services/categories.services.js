@@ -44,8 +44,14 @@ export const createCategory = async (req, res) => {
       return res.status(400).json({ message: "Name field is required" });
     }
 
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+        message: "Name must be a valid text",
+      });
+    }
+
     const newCategory = await Categoria.create({
-      name,
+      name: name.trim(),
     });
     res.status(201).json(newCategory);
   } catch (error) {
@@ -82,7 +88,13 @@ export const updateCategory = async (req, res) => {
         });
     }
 
-    await category.update({ name });
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({
+        message: "Name must be a valid text",
+      });
+    }
+
+    await category.update({ name: name.trim() });
 
     res.json(category);
   } catch (error) {
@@ -115,6 +127,12 @@ export const deleteCategory = async (req, res) => {
     res.json({message: `Category deleted succesfully. id: ${id}`});
   } catch (error) {
     console.error(error);
+
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      return res.status(409).json({
+        message: "Cannot delete category because it has associated games",
+      });
+    }
 
     res.status(500).json({ message: "Error deleting Category" });
   }
