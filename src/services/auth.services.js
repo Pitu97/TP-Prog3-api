@@ -225,7 +225,14 @@ export const createAdmin = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
+        const filters = {};
+
+        if (req.user.roleId === 2) {
+            filters.roleId = 3;
+        }
+
         const users = await Usuario.findAll({
+            where: filters,
             attributes: ['id', 'name', 'email', 'roleId']
         });
 
@@ -256,6 +263,12 @@ export const getUserbyId = async (req, res) => {
             });
         }
 
+        if (req.user.roleId === 2 && user.roleId !== 3) {
+            return res.status(403).json({
+                message: "Admins can only access client accounts"
+            });
+        }
+
         return res.status(200).json(user);
 
     } catch (error) {
@@ -279,6 +292,12 @@ export const updateUser = async (req, res) => {
         if(!user) {
             return res.status(404).json({
                 message: "User not found"
+            });
+        }
+
+        if (req.user.roleId === 2 && user.roleId !== 3) {
+            return res.status(403).json({
+                message: "Admins can only modify client accounts"
             });
         }
 
@@ -383,6 +402,12 @@ export const deleteUser = async (req, res) => {
         if(!user) {
             return res.status(404).json({
                 message: "User not found"
+            });
+        }
+
+        if (req.user.roleId === 2 && user.roleId !== 3) {
+            return res.status(403).json({
+                message: "Admins can only delete client accounts"
             });
         }
 
