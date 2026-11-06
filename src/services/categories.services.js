@@ -40,10 +40,6 @@ export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
 
-    if (!name || !name.trim()) {
-      return res.status(400).json({ message: "Name field is required" });
-    }
-
     if (typeof name !== "string" || !name.trim()) {
       return res.status(400).json({
         message: "Name must be a valid text",
@@ -80,12 +76,6 @@ export const updateCategory = async (req, res) => {
 
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
-    }
-
-    if(!name || !name.trim()) {
-        return res.status(400).json({
-            message: "Name field is required",
-        });
     }
 
     if (typeof name !== "string" || !name.trim()) {
