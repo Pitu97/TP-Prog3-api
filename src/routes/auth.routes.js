@@ -16,6 +16,6 @@ router.get("/admin/users/:id", verifyToken, authorizeRoles(1, 2), getUserbyId);
 
 router.patch("/admin/users/:id", verifyToken, authorizeRoles(1, 2), updateUser);
 
-router.delete("/admin/users/:id", verifyToken, authorizeRoles(1, 2), deleteUser);
+router.delete("/admin/users/:id", verifyToken, authorizeRoles(1), deleteUser);
 
 export default router;
